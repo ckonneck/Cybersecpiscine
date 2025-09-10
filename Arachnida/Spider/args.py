@@ -11,6 +11,13 @@ def get_args():
     )
 
     parser.add_argument(
+        "-m",
+        "--meta",
+        action="store_true",
+        help="checks for metadata and deletes them if they don't contain any."
+    )
+
+    parser.add_argument(
         "-l",
         "--level",
         type=int,

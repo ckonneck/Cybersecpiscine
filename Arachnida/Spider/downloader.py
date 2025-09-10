@@ -3,6 +3,7 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 from utils import stop_scraping
+from metacheck import meta_check
 
 ALLOWED_EXTENSIONS = (".jpg", ".jpeg", ".png", ".gif", ".bmp")
 
@@ -10,7 +11,7 @@ downloaded_urls = set()
 
 counters = {"downloaded": 0, "skipped": 0}
 
-def download_images(url: str, path: str, recursive: bool, level: int, visited=None):
+def download_images(url: str, path: str, recursive: bool, level: int, meta: bool, visited=None):
     global downloaded_urls, stop_scraping
     if stop_scraping:
         return
@@ -56,6 +57,8 @@ def download_images(url: str, path: str, recursive: bool, level: int, visited=No
                     for chunk in img_resp.iter_content(8192):
                         f.write(chunk)
                 print(f"Saved {filename}")
+            if meta:
+                meta_check(filename)
         except Exception as e:
             print(f"Failed to download {full_url}: {e}")
 
