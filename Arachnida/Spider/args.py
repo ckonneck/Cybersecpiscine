@@ -14,7 +14,7 @@ def get_args():
         "-m",
         "--meta",
         action="store_true",
-        help="checks for metadata and deletes them if they don't contain any."
+        help="checks for GPS Data in the metadata and deletes them if they don't contain any."
     )
 
     parser.add_argument(

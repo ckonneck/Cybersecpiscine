@@ -2,7 +2,6 @@ import os
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
-from utils import stop_scraping
 from metacheck import meta_check
 
 ALLOWED_EXTENSIONS = (".jpg", ".jpeg", ".png", ".gif", ".bmp")
@@ -12,9 +11,7 @@ downloaded_urls = set()
 counters = {"downloaded": 0, "skipped": 0}
 
 def download_images(url: str, path: str, recursive: bool, level: int, meta: bool, visited=None):
-    global downloaded_urls, stop_scraping
-    if stop_scraping:
-        return
+    global downloaded_urls
 
     if visited is None:
         visited = set()
@@ -66,4 +63,5 @@ def download_images(url: str, path: str, recursive: bool, level: int, meta: bool
         for link in soup.find_all("a", href=True):
             next_url = urljoin(url, link["href"])
             if urlparse(next_url).netloc == urlparse(url).netloc:
-                download_images(next_url, path, recursive, level - 1, visited)
+                download_images(next_url, path, recursive, level - 1, meta, visited)
+

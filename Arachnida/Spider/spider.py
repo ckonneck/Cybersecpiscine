@@ -1,11 +1,9 @@
 from args import get_args
-from utils import register_signal
 from downloader import download_images, counters
 import sys
 
 if __name__ == "__main__":
     args = get_args()
-    register_signal()
 
     print(f"Recursive: {args.recursive}")
     print(f"Max depth: {args.level}")
