@@ -6,15 +6,15 @@ def get_args():
     parser.add_argument(
         "-r",
         "--reverse",
-        action="store_true",
+        type=str,
         help="Reverses the infection caused."
     )
 
     parser.add_argument(
         "-v",
         "--version",
-        type=float,
-        default=1,
+        action="version",
+        version="%(prog)s 1.0",
         help="Current Version running."
     )
 
