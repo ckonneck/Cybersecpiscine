@@ -1,0 +1,10 @@
+data/
+pics/
+venv/
+.vscode/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+Stockholm/iv.txt
+Stockholm/key.txt
