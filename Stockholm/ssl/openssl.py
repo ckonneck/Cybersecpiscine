@@ -18,6 +18,20 @@ _TARGET_EXTENSIONS_=(
     "sxw", "ott", "odt", "pem", "p12", "csr", "crt", "key", "pfx", "der", "py"
 )
 
+# Pros:
+
+# Industry standard, widely used and trusted.
+# Supports many algorithms and options.
+# Files can be encrypted/decrypted outside Python (e.g., with the openssl CLI).
+# Good for interoperability with other systems and languages.
+
+# Cons:
+
+# More complex command-line interface.
+# Requires careful handling of keys, IVs, and options.
+# Error handling is less Pythonic (must parse subprocess output).
+# Not as easy to use securely by default (e.g., must manage IV, salt, and key size yourself).
+
 
 def encryptionssl(args):
     # Check if key and iv files exist

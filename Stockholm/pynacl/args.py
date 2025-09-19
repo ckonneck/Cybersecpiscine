@@ -6,7 +6,7 @@ def get_args():
     parser.add_argument(
         "-r",
         "--reverse",
-        type=str,
+        action="store_true",
         help="Reverses the infection caused."
     )
 
