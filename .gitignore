@@ -8,3 +8,4 @@ __pycache__/
 *.log
 Stockholm/iv.txt
 Stockholm/key.txt
+Stockholm/sodium.key

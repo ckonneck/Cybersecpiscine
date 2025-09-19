@@ -1,4 +1,5 @@
 VENV_DIR=venv
+PYTHON=$(VENV_DIR)/bin/python
 PIP=$(VENV_DIR)/bin/pip
 
 .PHONY: venv ssl pynacl
@@ -12,18 +13,19 @@ venv:
 	$(PIP) install pynacl
 	$(PIP) install -r requirements.txt || true
 
+
 ssl:
-	python3 ssl/stockholmssl.py $(ARGS)
+	$(PYTHON) ssl/stockholmssl.py $(ARGS)
 ssl_rev:
-	python3 ssl/stockholmssl.py -r
+	$(PYTHON) ssl/stockholmssl.py -r
 
 pynacl:
-	python3 pynacl/stockholmpynacl.py $(ARGS)
+	$(PYTHON) pynacl/stockholmpynacl.py $(ARGS)
 pynacl_rev:
-	python3 pynacl/stockholmpynacl.py -r
+	$(PYTHON) pynacl/stockholmpynacl.py -r
 
 help:
-	python3 pynacl/stockholmpynacl.py -help
+	$(PYTHON) pynacl/stockholmpynacl.py -help
 clean:
 	@echo "WARNING: This will delete all encrypted files!";
 	@echo "If they are deleted while files are still encrypted, you won't be able to reverse the encryption again."
