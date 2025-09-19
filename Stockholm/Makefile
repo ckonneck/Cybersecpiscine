@@ -27,7 +27,7 @@ pynacl_rev:
 help:
 	$(PYTHON) pynacl/stockholmpynacl.py -help
 clean:
-	@echo "WARNING: This will delete all encrypted files!";
+	@echo "WARNING: This will delete all encryption keys!";
 	@echo "If they are deleted while files are still encrypted, you won't be able to reverse the encryption again."
 	@if [ "$(CONFIRM)" = "yes" ]; then \
 	    rm -rf sodium.key key.txt iv.txt; \
